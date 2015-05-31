@@ -1,6 +1,6 @@
 {
   "name": "yeoman-option-or-prompt",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Provides a helper for yeoman generators that wraps the prompt method with code that will exclude any prompts for data that has been supplied via options.",
   "main": "index.js",
   "scripts": {
