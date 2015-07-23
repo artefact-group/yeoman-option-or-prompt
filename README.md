@@ -20,12 +20,12 @@ module.exports = yeoman.generators.Base.extend({
   prompting: function () {
     var done = this.async();
     // Instead of calling prompt, call _optionOrPrompt to allow parameters to be passed as command line or composeWith options.
-    this._optionOrPrompt({
+    this._optionOrPrompt([{
       type    : 'input',
       name    : 'name',
       message : 'Your project name',
       default : this.appname // Default to current folder name
-    }, function (answers) {
+    }], function (answers) {
       this.log(answers.name);
       done();
     }.bind(this));
