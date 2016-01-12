@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/artefact-group/yeoman-option-or-prompt#readme",
   "dependencies": {
-    "lodash": "^3.9.3"
+    "lodash": "^3.9.3",
+    "q": "^1.4.1"
   }
 }
