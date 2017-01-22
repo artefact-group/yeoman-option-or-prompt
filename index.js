@@ -1,33 +1,31 @@
-'use strict'
+'use strict';
 
-var _ = require('lodash');
-
-module.exports = function(prompts, callback) {
+module.exports = function(prompts) {
   // This method will only show prompts that haven't been supplied as options. This makes the generator more composable.
-  var filteredPrompts = [];
-  var props = {};
+  const filteredPrompts = [];
+  const props = new Map();
 
-  prompts.forEach(function(prompt) {
+  prompts.forEach(function prompts(prompt) {
     this.option(prompt.name);
-    var option = this.options[prompt.name];
+    const option = this.options[prompt.name];
 
-    if (option !== undefined) {
-      // Options supplied, add to props
-      props[prompt.name] = option;
-    } else {
+    if (option === undefined) {
       // No option supplied, user will be prompted
       filteredPrompts.push(prompt);
+    } else {
+      // Options supplied, add to props
+      props[prompt.name] = option;
     }
   }, this);
 
   if (filteredPrompts.length) {
-    this.prompt(filteredPrompts, function(mergeProps) {
+    return this.prompt(filteredPrompts).then(function mergeProps(mergeProps) {
       // Merge mergeProps into props/
-      _.assign(props, mergeProps);
-      callback && callback(props);
+      Object.assign(props, mergeProps);
+      return props;
     });
-  } else {
-    // No prompting required call the callback right away.
-    callback && callback(props);
   }
-}
+
+  // No prompting required call the callback right away.
+  return Promise.resolve(props);
+};
