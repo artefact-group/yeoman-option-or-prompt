@@ -6,7 +6,6 @@ module.exports = function(prompts) {
   const props = new Map();
 
   prompts.forEach(function prompts(prompt) {
-    this.option(prompt.name);
     const option = this.options[prompt.name];
 
     if (option === undefined) {
