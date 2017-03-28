@@ -11,9 +11,9 @@ module.exports = function(prompts) {
     if (option === undefined) {
       // No option supplied, user will be prompted
       filteredPrompts.push(prompt);
-    } else {
+    } else {      
       // Options supplied, add to props
-      props[prompt.name] = option;
+      props[prompt.name] = normalize(option); 
     }
   }, this);
 
@@ -28,3 +28,23 @@ module.exports = function(prompts) {
   // No prompting required call the callback right away.
   return Promise.resolve(props);
 };
+
+function normalize(option){
+    // TODO: 
+    // accept other types
+    
+    if (typeof option === 'boolean') {
+      return option;
+    }
+
+    if (typeof option === 'string'){
+      let lc = option.toLowerCase();
+
+      // it's a boolean in string format
+      if (lc === 'true' || lc === 'false') {
+        return (lc === 'true');
+      } else {
+        return option;
+      }
+    }
+}
