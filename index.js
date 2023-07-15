@@ -1,7 +1,5 @@
 'use strict';
 
-var q = require('q');
-
 module.exports = function(prompts) {
   // This method will only show prompts that haven't been supplied as options. This makes the generator more composable.
   const filteredPrompts = [];
@@ -13,14 +11,30 @@ module.exports = function(prompts) {
     if (option === undefined) {
       // No option supplied, user will be prompted
       filteredPrompts.push(prompt);
-    } else {      
+    } else {
       // Options supplied, add to props
-      props[prompt.name] = normalize(option); 
+      props[prompt.name] = normalize(option);
     }
   }, this);
 
   if (filteredPrompts.length) {
-    return promptNotSuppliedOptions(filteredPrompts, props);
+    var runPrompts = async () => {
+      for (let i = 0; i < filteredPrompts.length; i++) {
+        let filteredPrompt = filteredPrompts[i];
+        var isWhenConditionFulfilled = typeof filteredPrompt.when !== 'function' ||
+          (typeof filteredPrompt.when === 'function' && filteredPrompt.when(props));
+        if (isWhenConditionFulfilled) {
+          delete filteredPrompt.when;
+          await new Promise(async resolve => {
+            const answers = await this.prompt(filteredPrompt);
+            Object.assign(props, answers);
+            resolve();
+          });
+        }
+      }
+    };
+    runPrompts.bind(this)();
+    return props;
   }
 
   // No prompting required call the callback right away.
@@ -28,9 +42,9 @@ module.exports = function(prompts) {
 };
 
 function normalize(option){
-    // TODO: 
+    // TODO:
     // accept other types
-    
+
     if (typeof option === 'boolean') {
       return option;
     }
@@ -45,37 +59,4 @@ function normalize(option){
         return option;
       }
     }
-}
-
-function promptNotSuppliedOptions(filteredPrompts, props) {
-    // The when functions that may be specified with a prompt should receive all the already given answers.
-    // That's why we have to do this overcomplex looking approach with promise (to make sure every when function
-    // gets the latest answers given).
-    var prompts = filteredPrompts.map(function(filteredPrompt) {
-      return function() {
-        var promise = q.defer();
-
-        var isWhenConditionFulfilled = typeof filteredPrompt.when !== 'function' ||
-            (typeof filteredPrompt.when === 'function' && filteredPrompt.when(props));
-
-        if (isWhenConditionFulfilled) {
-          delete filteredPrompt.when;
-
-          this.prompt(filteredPrompt, function(mergeProps) {
-              // Merge mergeProps into props/
-              Object.assign(props, mergeProps);
-              promise.resolve();
-          });
-        } else {
-          promise.resolve();
-        }
-        return promise.promise;
-      }.bind(this);
-    }.bind(this));
-
-    var currentPrompt = prompts[0]();
-    for (var i = 1; i < prompts.length; i++) {
-      currentPrompt = currentPrompt.then(prompts[i]);
-    }
-    return props;
 }

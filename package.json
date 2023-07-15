@@ -17,7 +17,6 @@
   },
   "homepage": "https://github.com/artefact-group/yeoman-option-or-prompt#readme",
   "dependencies": {
-    "pinkie-promise": "2.0.1",
-    "q": "^1.4.1"
+    "pinkie-promise": "^2.0.1"
   }
 }
