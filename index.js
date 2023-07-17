@@ -34,7 +34,6 @@ module.exports = function(prompts) {
       }
     };
     runPrompts.bind(this)();
-    return props;
   }
 
   // No prompting required call the callback right away.
@@ -42,21 +41,21 @@ module.exports = function(prompts) {
 };
 
 function normalize(option){
-    // TODO:
-    // accept other types
+  // TODO:
+  // accept other types
 
-    if (typeof option === 'boolean') {
+  if (typeof option === 'boolean') {
+    return option;
+  }
+
+  if (typeof option === 'string'){
+    let lc = option.toLowerCase();
+
+    // it's a boolean in string format
+    if (lc === 'true' || lc === 'false') {
+      return (lc === 'true');
+    } else {
       return option;
     }
-
-    if (typeof option === 'string'){
-      let lc = option.toLowerCase();
-
-      // it's a boolean in string format
-      if (lc === 'true' || lc === 'false') {
-        return (lc === 'true');
-      } else {
-        return option;
-      }
-    }
+  }
 }
