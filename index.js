@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(prompts) {
+module.exports = async function(prompts) {
   // This method will only show prompts that haven't been supplied as options. This makes the generator more composable.
   const filteredPrompts = [];
   const props = new Map();
@@ -33,7 +33,7 @@ module.exports = function(prompts) {
         }
       }
     };
-    runPrompts.bind(this)();
+    await runPrompts.bind(this)();
   }
 
   // No prompting required call the callback right away.
