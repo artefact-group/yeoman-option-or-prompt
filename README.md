@@ -25,10 +25,10 @@ module.exports = yeoman.generators.Base.extend({
       name    : 'name',
       message : 'Your project name',
       default : this.appname // Default to current folder name
-    }], function (answers) {
+    }].then(answers => {
       this.log(answers.name);
       done();
-    }.bind(this));
+    });
   }
 })
 ```
